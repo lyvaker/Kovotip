@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOVOTIP, s.r.o. — Presné CNC obrábanie | Prešov</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root{
+  --ink:#0A1628;
+  --ink-2:#0F2238;
+  --navy:#103A6B;
+  --blue:#1E63C4;
+  --blue-bright:#2E7BE8;
+  --blue-glow:rgba(46,123,232,0.3);
+  --cyan:#5BC8FF;
+  --slate:#5A7290;
+  --slate-light:#94A8C0;
+  --mist:#EEF3F9;
+  --mist-2:#E0E9F4;
+  --line:#D2DEEC;
+  --white:#FFFFFF;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--mist);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.55;overflow-x:hidden;}
+::selection{background:var(--blue);color:var(--white);}
+h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:-0.018em;}
+.mono{font-family:'JetBrains Mono',monospace;letter-spacing:0.02em;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:1220px;margin:0 auto;padding:0 32px;}
+
+/* ===== Header ===== */
+header{position:sticky;top:0;z-index:200;background:rgba(238,243,249,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;max-width:1220px;margin:0 auto;gap:24px;}
+.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.34rem;letter-spacing:-0.02em;display:flex;align-items:center;gap:11px;cursor:pointer;}
+.logo-mark{width:36px;height:36px;position:relative;flex-shrink:0;transition:transform 0.6s var(--ease);}
+.logo:hover .logo-mark{transform:rotate(180deg);}
+.logo-mark svg{width:100%;height:100%;}
+.nav-links{display:flex;gap:28px;font-size:0.92rem;font-weight:500;}
+.nav-links a{position:relative;padding:6px 0;cursor:pointer;transition:color 0.2s;color:var(--slate);}
+.nav-links a:hover,.nav-links a.active{color:var(--blue);}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--blue);transition:width 0.3s var(--ease);}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%;}
+.nav-right{display:flex;align-items:center;gap:14px;}
+.lang-toggle{display:flex;border:1px solid var(--line);overflow:hidden;font-size:0.78rem;font-family:'JetBrains Mono',monospace;font-weight:500;border-radius:6px;}
+.lang-btn{padding:7px 12px;cursor:pointer;background:transparent;border:none;color:var(--slate);transition:all 0.2s;font-family:inherit;}
+.lang-btn.active{background:var(--blue);color:var(--white);}
+.nav-cta{background:var(--blue);color:var(--white);padding:11px 20px;font-size:0.86rem;font-weight:600;border:none;cursor:pointer;border-radius:8px;transition:all 0.25s var(--ease);}
+.nav-cta:hover{background:var(--blue-bright);box-shadow:0 8px 24px var(--blue-glow);transform:translateY(-1px);}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;}
+.burger span{width:24px;height:2px;background:var(--ink);transition:0.3s;}
+@media(max-width:920px){
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:var(--mist);padding:20px 32px;gap:18px;border-bottom:1px solid var(--line);}
+  .nav-links.open{display:flex;}
+  .burger{display:flex;}
+  .nav-cta{display:none;}
+}
+
+/* ===== Pages ===== */
+.page{display:none;}
+.page.active{display:block;animation:pageIn 0.55s var(--ease);}
+@keyframes pageIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+/* ===== Hero with video/canvas bg ===== */
+.hero{position:relative;min-height:88vh;display:flex;align-items:center;overflow:hidden;background:var(--ink);}
+#heroCanvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:0;transition:opacity 1.2s ease;}
+.hero-video.loaded{opacity:0.55;}
+.hero-grid-lines{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0.4;background-image:linear-gradient(rgba(91,200,255,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(91,200,255,0.07) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 30% 50%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 80% 60% at 30% 50%,#000 30%,transparent 75%);animation:gridShift 24s linear infinite;}
+@keyframes gridShift{from{background-position:0 0;}to{background-position:60px 60px;}}
+.hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(105deg, rgba(10,22,40,0.92) 0%, rgba(15,34,56,0.7) 45%, rgba(10,22,40,0.35) 100%);}
+.hero-content{position:relative;z-index:2;max-width:1220px;margin:0 auto;padding:0 32px;width:100%;color:var(--white);}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--cyan);margin-bottom:26px;text-transform:uppercase;letter-spacing:0.08em;padding:7px 14px;border:1px solid rgba(91,200,255,0.3);border-radius:30px;background:rgba(91,200,255,0.06);}
+.hero-eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.hero h1{font-size:clamp(2.6rem,6vw,5rem);line-height:1.02;margin-bottom:28px;max-width:840px;font-weight:700;}
+.hero h1 em{font-style:normal;color:var(--cyan);}
+.hero-desc{font-size:clamp(1.05rem,1.6vw,1.25rem);color:var(--slate-light);max-width:560px;margin-bottom:38px;}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
+
+.btn-primary{background:var(--blue);color:var(--white);padding:17px 32px;font-weight:600;font-size:0.96rem;border:none;cursor:pointer;border-radius:10px;display:inline-flex;align-items:center;gap:10px;transition:all 0.3s var(--ease);position:relative;overflow:hidden;}
+.btn-primary::before{content:'';position:absolute;top:0;left:-120%;width:60%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.35),transparent);transition:none;}
+.btn-primary:hover::before{animation:shimmer 0.9s var(--ease);}
+@keyframes shimmer{from{left:-120%;}to{left:140%;}}
+.btn-primary .arrow{transition:transform 0.3s var(--ease);}
+.btn-primary:hover{background:var(--blue-bright);box-shadow:0 10px 30px var(--blue-glow);transform:translateY(-2px);}
+.btn-primary:hover .arrow{transform:translateX(5px);}
+.btn-ghost{padding:17px 32px;font-weight:600;font-size:0.96rem;border:1px solid rgba(255,255,255,0.3);color:var(--white);background:transparent;cursor:pointer;border-radius:10px;display:inline-flex;align-items:center;gap:10px;transition:all 0.3s var(--ease);}
+.btn-ghost:hover{background:rgba(255,255,255,0.1);border-color:var(--white);transform:translateY(-2px);}
+
+.hero-scroll{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:2;color:var(--slate-light);font-family:'JetBrains Mono',monospace;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.hero-scroll .bar{width:1px;height:36px;background:linear-gradient(var(--cyan),transparent);animation:scrolldown 2s infinite;}
+@keyframes scrolldown{0%{opacity:0;transform:scaleY(0);transform-origin:top;}50%{opacity:1;}100%{opacity:0;transform:scaleY(1);transform-origin:bottom;}}
+
+/* ===== Stats ===== */
+.stats-bar{background:var(--ink-2);color:var(--white);padding:0;position:relative;z-index:1;}
+.stats-grid{max-width:1220px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);}
+.stat-cell{padding:44px 32px;border-right:1px solid rgba(255,255,255,0.08);}
+.stat-cell:last-child{border-right:none;}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-size:2.7rem;font-weight:700;color:var(--cyan);line-height:1;margin-bottom:10px;}
+.stat-label{font-size:0.84rem;color:var(--slate-light);text-transform:uppercase;letter-spacing:0.04em;}
+@media(max-width:760px){.stats-grid{grid-template-columns:1fr 1fr;}.stat-cell{border-bottom:1px solid rgba(255,255,255,0.08);}}
+
+/* ===== Sections ===== */
+section{position:relative;z-index:1;padding:96px 32px;}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px;gap:24px;flex-wrap:wrap;}
+.section-tag{font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.section-tag::before{content:'';width:24px;height:1px;background:var(--blue);}
+.section-head h2{font-size:clamp(2rem,3.4vw,2.9rem);max-width:660px;line-height:1.08;}
+.section-head p{color:var(--slate);max-width:340px;font-size:0.98rem;}
+
+/* intro band */
+.intro{background:var(--white);}
+.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+.intro-text h2{font-size:clamp(1.9rem,3vw,2.6rem);margin-bottom:24px;line-height:1.12;}
+.intro-text p{color:var(--slate);font-size:1.04rem;margin-bottom:18px;}
+.intro-text .lead{color:var(--ink);font-size:1.14rem;font-weight:500;}
+.intro-visual{position:relative;height:420px;border-radius:16px;overflow:hidden;background:radial-gradient(circle at 50% 40%, #2A4A7A 0%, #14294A 55%, #0A1628 100%);border:1px solid var(--line);}
+.intro-visual::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 42%, rgba(91,200,255,0.13) 0%, transparent 56%);pointer-events:none;z-index:1;}
+.intro-visual canvas{width:100%;height:100%;display:block;cursor:grab;position:relative;z-index:2;}
+.intro-visual canvas:active{cursor:grabbing;}
+.intro-badge{position:absolute;bottom:16px;left:16px;z-index:3;background:rgba(10,22,40,0.8);backdrop-filter:blur(6px);color:var(--white);padding:10px 14px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:0.74rem;display:flex;align-items:center;gap:8px;}
+.intro-badge .ico{color:var(--cyan);}
+@media(max-width:860px){.intro-grid{grid-template-columns:1fr;gap:40px;}.intro-visual{height:340px;}}
+
+/* grades */
+.grades{background:var(--mist-2);padding:28px 32px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);position:relative;z-index:1;}
+.grades-inner{max-width:1220px;margin:0 auto;display:flex;align-items:center;gap:26px;flex-wrap:wrap;}
+.grades-label{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--slate);text-transform:uppercase;letter-spacing:0.05em;flex-shrink:0;}
+.grades-list{display:flex;gap:9px;flex-wrap:wrap;}
+.grade-chip{font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:500;background:var(--white);border:1px solid var(--line);padding:6px 13px;border-radius:6px;transition:all 0.25s var(--ease);cursor:default;}
+.grade-chip:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-2px);box-shadow:0 6px 16px rgba(30,99,196,0.12);}
+
+/* services */
+.services{background:var(--white);}
+.service-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.service-card{background:var(--mist);border:1px solid var(--line);padding:34px 28px;border-radius:14px;transition:all 0.35s var(--ease);position:relative;overflow:hidden;}
+.service-card:hover{background:var(--white);transform:translateY(-6px);box-shadow:0 20px 44px rgba(16,58,107,0.12);border-color:var(--blue);}
+.service-ico{width:48px;height:48px;border-radius:10px;background:var(--ink);display:flex;align-items:center;justify-content:center;margin-bottom:22px;transition:all 0.35s var(--ease);}
+.service-card:hover .service-ico{background:var(--blue);transform:scale(1.05);}
+.service-ico svg{width:26px;height:26px;stroke:var(--cyan);}
+.service-card:hover .service-ico svg{stroke:var(--white);}
+.service-num{position:absolute;top:24px;right:26px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--slate-light);}
+.service-card h3{font-size:1.18rem;margin-bottom:11px;}
+.service-card p{color:var(--slate);font-size:0.9rem;}
+@media(max-width:860px){.service-grid{grid-template-columns:1fr;}}
+
+/* machine table */
+.machines{background:var(--mist);}
+.machine-table{width:100%;border-collapse:collapse;background:var(--white);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.machine-table th{text-align:left;font-family:'JetBrains Mono',monospace;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--slate);font-weight:500;padding:18px 24px;border-bottom:1px solid var(--line);background:var(--mist);}
+.machine-table td{padding:18px 24px;border-bottom:1px solid var(--mist-2);font-size:0.92rem;transition:background 0.2s;}
+.machine-table tr:last-child td{border-bottom:none;}
+.machine-table tbody tr:hover td{background:var(--mist);}
+.machine-table td:first-child{font-weight:600;}
+.machine-table td.mono-cell{font-family:'JetBrains Mono',monospace;color:var(--slate);font-size:0.86rem;}
+.tag-pill{display:inline-block;background:rgba(30,99,196,0.1);color:var(--blue);font-size:0.74rem;padding:4px 11px;font-family:'JetBrains Mono',monospace;border-radius:20px;}
+.table-scroll{overflow-x:auto;}
+@media(max-width:760px){.machine-table{font-size:0.85rem;}.machine-table th,.machine-table td{padding:12px 14px;}}
+
+/* materials */
+.materials{background:var(--white);}
+.mat-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
+.mat-col h3{font-size:1.1rem;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.mat-col h3::before{content:'';width:8px;height:8px;background:var(--blue);border-radius:2px;}
+.mat-list{display:flex;flex-wrap:wrap;gap:10px;}
+.mat-item{border:1px solid var(--line);padding:9px 16px;font-size:0.86rem;color:var(--slate);border-radius:8px;transition:all 0.25s var(--ease);cursor:default;}
+.mat-item:hover{border-color:var(--blue);color:var(--ink);transform:translateY(-2px);}
+@media(max-width:760px){.mat-grid{grid-template-columns:1fr;gap:36px;}}
+
+/* ===== Products with 3D ===== */
+.products{background:var(--mist);}
+.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.product-card{background:var(--white);border:1px solid var(--line);cursor:pointer;transition:all 0.35s var(--ease);border-radius:16px;overflow:hidden;}
+.product-card:hover{transform:translateY(-8px);box-shadow:0 24px 50px rgba(16,58,107,0.16);border-color:var(--blue);}
+.product-canvas-wrap{height:230px;background:radial-gradient(circle at 50% 38%, #2A4A7A 0%, #14294A 55%, #0A1628 100%);position:relative;overflow:hidden;}
+.product-canvas-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 40%, rgba(91,200,255,0.14) 0%, transparent 55%);pointer-events:none;}
+.product-canvas-wrap::after{content:'';position:absolute;left:50%;bottom:24px;transform:translateX(-50%);width:62%;height:18px;background:radial-gradient(ellipse, rgba(0,0,0,0.45) 0%, transparent 72%);pointer-events:none;}
+.product-canvas-wrap canvas{width:100%;height:100%;display:block;position:relative;z-index:1;}
+.product-canvas-wrap .drag-hint{position:absolute;top:12px;right:12px;font-family:'JetBrains Mono',monospace;font-size:0.66rem;color:var(--slate-light);background:rgba(10,22,40,0.6);padding:4px 8px;border-radius:14px;display:flex;align-items:center;gap:5px;opacity:0;transition:opacity 0.3s;}
+.product-card:hover .drag-hint{opacity:1;}
+.product-body{padding:22px;}
+.product-body h3{font-size:1.16rem;margin-bottom:8px;}
+.product-body p{font-size:0.85rem;color:var(--slate);margin-bottom:16px;}
+.product-more{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--blue);display:flex;align-items:center;gap:6px;font-weight:500;}
+.product-more .arrow{transition:transform 0.3s var(--ease);}
+.product-card:hover .product-more .arrow{transform:translateX(5px);}
+@media(max-width:860px){.product-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:560px){.product-grid{grid-template-columns:1fr;}}
+
+/* modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,22,40,0.65);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity 0.35s var(--ease);}
+.modal-overlay.open{opacity:1;pointer-events:auto;}
+.modal{background:var(--white);max-width:760px;width:100%;max-height:90vh;overflow-y:auto;border-radius:18px;transform:translateY(30px) scale(0.96);transition:transform 0.4s var(--ease);position:relative;}
+.modal-overlay.open .modal{transform:translateY(0) scale(1);}
+.modal-canvas{height:320px;background:radial-gradient(circle at 50% 42%, #2A4A7A 0%, #14294A 55%, #0A1628 100%);border-radius:18px 18px 0 0;position:relative;overflow:hidden;}
+.modal-canvas::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 44%, rgba(91,200,255,0.16) 0%, transparent 58%);pointer-events:none;z-index:1;}
+.modal-canvas::after{content:'';position:absolute;left:50%;bottom:30px;transform:translateX(-50%);width:55%;height:22px;background:radial-gradient(ellipse, rgba(0,0,0,0.5) 0%, transparent 72%);pointer-events:none;z-index:1;}
+.modal-canvas canvas{width:100%;height:100%;display:block;cursor:grab;position:relative;z-index:2;}
+.modal-canvas canvas:active{cursor:grabbing;}
+.modal-canvas .drag-hint{position:absolute;bottom:14px;left:14px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--slate-light);background:rgba(10,22,40,0.6);padding:6px 11px;border-radius:16px;display:flex;align-items:center;gap:6px;}
+.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);width:40px;height:40px;cursor:pointer;font-size:1.1rem;color:var(--white);display:flex;align-items:center;justify-content:center;transition:all 0.25s var(--ease);border-radius:10px;backdrop-filter:blur(6px);z-index:3;}
+.modal-close:hover{background:var(--blue);border-color:var(--blue);transform:rotate(90deg);}
+.modal-body{padding:32px;}
+.modal-num{font-family:'JetBrains Mono',monospace;font-size:0.76rem;color:var(--blue);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;}
+.modal-body h3{font-size:1.8rem;margin-bottom:14px;}
+.modal-body>p{color:var(--slate);font-size:0.98rem;margin-bottom:24px;}
+.modal-specs{border-top:1px solid var(--line);}
+.modal-spec-row{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--mist-2);font-size:0.92rem;}
+.modal-spec-row .l{color:var(--slate);}
+.modal-spec-row .v{font-family:'JetBrains Mono',monospace;font-weight:500;}
+.modal-cta{margin-top:26px;width:100%;justify-content:center;}
+
+/* quality */
+.quality{background:var(--ink);color:var(--white);}
+.quality .section-tag{color:var(--cyan);}
+.quality .section-tag::before{background:var(--cyan);}
+.quality .section-head h2{color:var(--white);}
+.quality .section-head p{color:var(--slate-light);}
+.quality-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+.quality-card{background:var(--ink-2);padding:34px;border-radius:14px;border:1px solid rgba(255,255,255,0.07);transition:all 0.35s var(--ease);}
+.quality-card:hover{border-color:var(--blue);transform:translateY(-4px);background:var(--navy);}
+.quality-card h4{font-size:1.1rem;margin-bottom:12px;color:var(--white);display:flex;align-items:center;gap:11px;}
+.quality-card h4 .qn{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-size:0.9rem;}
+.quality-card p{color:var(--slate-light);font-size:0.9rem;}
+@media(max-width:760px){.quality-grid{grid-template-columns:1fr;}}
+
+/* timeline */
+.timeline{background:var(--white);}
+.tl-track{position:relative;padding-left:32px;}
+.tl-track::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:2px;background:var(--line);}
+.tl-item{position:relative;padding-bottom:38px;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-item::before{content:'';position:absolute;left:-37px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--blue);border:3px solid var(--white);box-shadow:0 0 0 2px var(--blue);}
+.tl-year{font-family:'JetBrains Mono',monospace;color:var(--blue);font-weight:500;font-size:0.92rem;margin-bottom:6px;}
+.tl-item h4{font-size:1.14rem;margin-bottom:6px;}
+.tl-item p{color:var(--slate);font-size:0.92rem;max-width:560px;}
+
+/* cta band */
+.cta-band{background:linear-gradient(120deg,var(--navy) 0%,var(--blue) 100%);color:var(--white);text-align:center;overflow:hidden;position:relative;}
+.cta-band::before{content:'';position:absolute;top:-50%;left:-10%;width:400px;height:400px;border:50px solid rgba(255,255,255,0.05);border-radius:50%;}
+.cta-band::after{content:'';position:absolute;bottom:-50%;right:-10%;width:400px;height:400px;border:50px solid rgba(255,255,255,0.05);border-radius:50%;}
+.cta-band h2{font-size:clamp(2rem,3.6vw,3rem);margin-bottom:16px;position:relative;}
+.cta-band p{font-size:1.08rem;opacity:0.92;margin-bottom:32px;max-width:560px;margin-left:auto;margin-right:auto;position:relative;}
+.btn-light{background:var(--white);color:var(--blue);padding:17px 36px;font-weight:600;font-size:1rem;border:1px solid var(--white);cursor:pointer;border-radius:10px;display:inline-flex;align-items:center;gap:10px;transition:all 0.3s var(--ease);position:relative;animation:breathe 3s ease-in-out infinite;}
+@keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,0.4);}50%{box-shadow:0 0 0 10px rgba(255,255,255,0);}}
+.btn-light:hover{background:transparent;color:var(--white);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.25);animation:none;}
+.btn-light .arrow{transition:transform 0.3s var(--ease);}
+.btn-light:hover .arrow{transform:translateX(5px);}
+
+/* contact */
+.contact{background:var(--mist);}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;}
+.contact-info-row{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid var(--line);}
+.contact-info-row:first-child{padding-top:0;}
+.contact-info-label{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--slate);text-transform:uppercase;width:120px;flex-shrink:0;padding-top:2px;}
+.contact-info-value{font-weight:500;font-size:0.98rem;}
+.contact-info-value a{transition:color 0.2s;}
+.contact-info-value a:hover{color:var(--blue);}
+.social-row{display:flex;gap:12px;margin-top:24px;}
+.social-btn{width:42px;height:42px;border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all 0.25s var(--ease);background:var(--white);}
+.social-btn:hover{background:var(--blue);border-color:var(--blue);transform:translateY(-2px);}
+.social-btn svg{width:20px;height:20px;fill:var(--slate);}
+.social-btn:hover svg{fill:var(--white);}
+.rfq-box{background:var(--white);border:1px solid var(--line);padding:36px;border-radius:16px;}
+.rfq-box h3{font-size:1.3rem;margin-bottom:8px;}
+.rfq-box .sub{color:var(--slate);font-size:0.88rem;margin-bottom:24px;}
+.form-row{margin-bottom:18px;}
+.form-row label{display:block;font-size:0.78rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;color:var(--slate);margin-bottom:8px;letter-spacing:0.03em;}
+.form-row input,.form-row textarea{width:100%;border:1px solid var(--line);background:var(--mist);padding:13px 14px;font-family:'Inter',sans-serif;font-size:0.92rem;color:var(--ink);border-radius:8px;transition:border 0.2s;}
+.form-row input:focus,.form-row textarea:focus{outline:none;border-color:var(--blue);background:var(--white);}
+.form-row textarea{resize:vertical;min-height:90px;}
+.form-submit{width:100%;background:var(--blue);color:var(--white);border:none;padding:16px;font-weight:600;font-size:0.95rem;cursor:pointer;border-radius:8px;transition:all 0.25s var(--ease);}
+.form-submit:hover{background:var(--blue-bright);box-shadow:0 8px 24px var(--blue-glow);}
+.map-wrap{margin-top:24px;border:1px solid var(--line);border-radius:12px;height:240px;overflow:hidden;}
+.map-wrap iframe{width:100%;height:100%;border:0;filter:grayscale(0.2) contrast(1.05);}
+@media(max-width:860px){.contact-grid{grid-template-columns:1fr;gap:40px;}}
+
+/* footer */
+footer{background:var(--ink);color:var(--slate-light);padding:56px 32px 32px;font-size:0.84rem;}
+.footer-top{max-width:1220px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.footer-col h5{color:var(--white);font-family:'JetBrains Mono',monospace;font-size:0.76rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:18px;font-weight:500;}
+.footer-col .logo{color:var(--white);font-size:1.2rem;margin-bottom:16px;}
+.footer-col p{margin-bottom:10px;max-width:300px;}
+.footer-col a{display:block;margin-bottom:10px;cursor:pointer;transition:color 0.2s;}
+.footer-col a:hover{color:var(--cyan);}
+.footer-bottom{max-width:1220px;margin:0 auto;padding-top:26px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+@media(max-width:760px){.footer-top{grid-template-columns:1fr;gap:30px;}}
+
+/* marquee */
+.marquee{background:var(--ink);overflow:hidden;padding:18px 0;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);position:relative;z-index:1;}
+.marquee-track{display:inline-flex;align-items:center;gap:28px;white-space:nowrap;animation:marquee 28s linear infinite;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.05rem;letter-spacing:0.04em;color:var(--white);}
+.marquee-track span{flex-shrink:0;}
+.marquee-track .m-dot{color:var(--blue);font-size:0.7rem;}
+.marquee:hover .marquee-track{animation-play-state:paused;}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.8s var(--ease),transform 0.8s var(--ease);}
+.reveal.in{opacity:1;transform:translateY(0);}
+.reveal[data-delay="1"]{transition-delay:0.08s;}
+.reveal[data-delay="2"]{transition-delay:0.16s;}
+.reveal[data-delay="3"]{transition-delay:0.24s;}
+.reveal[data-delay="4"]{transition-delay:0.32s;}
+@media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none;transition:none;}html{scroll-behavior:auto;}.page{animation:none;}.marquee-track{animation:none;}.btn-light{animation:none;}.hero-grid-lines{animation:none;}}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+
+[data-en]{display:none;}
+body.lang-en [data-sk]{display:none;}
+body.lang-en [data-en]{display:revert;}
+</style>
+</head>
+<body class="lang-sk">
+<!-- CONTENT -->
+
+<header>
+  <div class="nav">
+    <div class="logo" onclick="go('home')">
+      <span class="logo-mark"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="#1E63C4" stroke-width="2.5"/><circle cx="20" cy="20" r="7" fill="#1E63C4"/><g stroke="#0A1628" stroke-width="2.5"><line x1="20" y1="2" x2="20" y2="9"/><line x1="20" y1="31" x2="20" y2="38"/><line x1="2" y1="20" x2="9" y2="20"/><line x1="31" y1="20" x2="38" y2="20"/></g></svg></span>
+      KOVOTIP
+    </div>
+    <nav class="nav-links" id="navLinks">
+      <a onclick="go('home')" data-page="home"><span data-sk>Domov</span><span data-en>Home</span></a>
+      <a onclick="go('firma')" data-page="firma"><span data-sk>O firme</span><span data-en>Company</span></a>
+      <a onclick="go('technologie')" data-page="technologie"><span data-sk>Technológie</span><span data-en>Technologies</span></a>
+      <a onclick="go('vyrobky')" data-page="vyrobky"><span data-sk>Výrobky 3D</span><span data-en>Products 3D</span></a>
+      <a onclick="go('kontakt')" data-page="kontakt"><span data-sk>Kontakt</span><span data-en>Contact</span></a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btnSK" onclick="setLang('sk')">SK</button>
+        <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+      </div>
+      <button class="nav-cta" onclick="go('kontakt')"><span data-sk>Nezáväzná ponuka</span><span data-en>Get a quote</span></button>
+      <button class="burger" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== HOME ===== -->
+<main class="page active" id="page-home">
+  <div class="hero">
+    <canvas id="heroCanvas"></canvas>
+    <video id="heroVideo" class="hero-video" autoplay muted loop playsinline poster=""></video>
+    <div class="hero-grid-lines"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow"><span class="dot"></span>Nižná Šebastová · Prešov · <span data-sk>od 2011</span><span data-en>since 2011</span></div>
+      <h1>
+        <span data-sk>Presné CNC obrábanie<br>na <em>0,01 mm</em> presne.</span>
+        <span data-en>Precision CNC machining<br>down to <em>0.01 mm</em>.</span>
+      </h1>
+      <p class="hero-desc">
+        <span data-sk>Rodinná strojárska firma so sústružením a frézovaním kovových dielcov pre strojársky, automobilový a energetický priemysel. Od kusu po milión.</span>
+        <span data-en>A family engineering company turning and milling metal parts for the engineering, automotive and energy sectors. From a single piece to a million.</span>
+      </p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="go('vyrobky')"><span data-sk>Prehliadnuť výrobky v 3D</span><span data-en>Explore products in 3D</span> <span class="arrow">→</span></button>
+        <button class="btn-ghost" onclick="go('kontakt')"><span data-sk>Poslať výkres</span><span data-en>Send a drawing</span></button>
+      </div>
+    </div>
+    <div class="hero-scroll"><span data-sk>Scrollujte</span><span data-en>Scroll</span><div class="bar"></div></div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stats-grid">
+      <div class="stat-cell reveal"><div class="stat-num" data-count="11" data-suffix=" mil.">0</div><div class="stat-label"><span data-sk>vyrobených dielcov</span><span data-en>parts produced</span></div></div>
+      <div class="stat-cell reveal" data-delay="1"><div class="stat-num" data-count="2011">0</div><div class="stat-label"><span data-sk>rok založenia</span><span data-en>year founded</span></div></div>
+      <div class="stat-cell reveal" data-delay="2"><div class="stat-num" data-count="5">0</div><div class="stat-label"><span data-sk>krajín nákupu materiálu</span><span data-en>countries of supply</span></div></div>
+      <div class="stat-cell reveal" data-delay="3"><div class="stat-num" data-count="0" data-raw="0,01 mm">0,01 mm</div><div class="stat-label"><span data-sk>presnosť</span><span data-en>precision</span></div></div>
+    </div>
+  </div>
+
+  <section class="intro">
+    <div class="wrap">
+      <div class="intro-grid">
+        <div class="intro-text reveal">
+          <div class="section-tag"><span data-sk>O firme</span><span data-en>About us</span></div>
+          <h2><span data-sk>Rodinná firma s dlhoročnou tradíciou</span><span data-en>A family company with a long tradition</span></h2>
+          <p class="lead"><span data-sk>Našou prednosťou sú ľudia, skúsenosti a precíznosť.</span><span data-en>Our strength is our people, experience and precision.</span></p>
+          <p><span data-sk>Sme dynamicky sa rozvíjajúca spoločnosť, kde nájdete profesionálneho a dôverného obchodného partnera. Náš kolektív dokáže vaše predstavy v plnej miere realizovať.</span><span data-en>We are a dynamically growing company where you'll find a professional and trustworthy partner. Our team brings your ideas fully to life.</span></p>
+          <p><span data-sk>Výrobná prevádzka tvorí umiestnením, technológiami a vybavením ucelený samostatný výrobný cyklus — od malosériovej po veľkosériovú výrobu.</span><span data-en>Our plant forms a complete, self-contained production cycle in its location, technology and equipment — from small to large series.</span></p>
+        </div>
+        <div class="intro-visual reveal" data-delay="1">
+          <canvas id="introCanvas"></canvas>
+          <div class="intro-badge"><span class="ico">⊹</span> <span data-sk>Ťahaním otáčajte · 3D model</span><span data-en>Drag to rotate · 3D model</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="grades">
+    <div class="grades-inner reveal">
+      <div class="grades-label"><span data-sk>Spracovávané akosti</span><span data-en>Processed grades</span></div>
+      <div class="grades-list">
+        <span class="grade-chip">11SMn30+C</span><span class="grade-chip">S235</span><span class="grade-chip">S355</span>
+        <span class="grade-chip">C45</span><span class="grade-chip">42CrMo4</span><span class="grade-chip">AISI 304/316</span>
+        <span class="grade-chip">POM</span><span class="grade-chip">PA6 / PA66</span><span class="grade-chip">PTFE+25%C</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>CNC SÚSTRUŽENIE</span><span class="m-dot">●</span><span>FRÉZOVANIE</span><span class="m-dot">●</span><span>VŔTANIE</span><span class="m-dot">●</span><span>ZÁVITOVANIE</span><span class="m-dot">●</span><span>0,01 mm</span><span class="m-dot">●</span><span>MITUTOYO</span><span class="m-dot">●</span><span>11 MIL. DIELCOV</span><span class="m-dot">●</span>
+      <span>CNC SÚSTRUŽENIE</span><span class="m-dot">●</span><span>FRÉZOVANIE</span><span class="m-dot">●</span><span>VŔTANIE</span><span class="m-dot">●</span><span>ZÁVITOVANIE</span><span class="m-dot">●</span><span>0,01 mm</span><span class="m-dot">●</span><span>MITUTOYO</span><span class="m-dot">●</span><span>11 MIL. DIELCOV</span><span class="m-dot">●</span>
+    </div>
+  </div>
+
+  <section class="services">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="section-tag"><span data-sk>Výroba</span><span data-en>Production</span></div>
+          <h2><span data-sk>Kompletný rozsah trieskového obrábania</span><span data-en>Full range of machining services</span></h2>
+        </div>
+        <p><span data-sk>Od jedného kusa po sériovú výrobu tisícov dielcov — pod jednou strechou.</span><span data-en>From a single prototype to thousands of parts — all under one roof.</span></p>
+      </div>
+      <div class="service-grid">
+        <div class="service-card reveal"><div class="service-num">01</div><div class="service-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></div><h3><span data-sk>CNC sústruženie</span><span data-en>CNC turning</span></h3><p><span data-sk>7 a 8-osové sústružnícko-frézarské centrá s protivretenami a podávačmi tyčového materiálu.</span><span data-en>7 and 8-axis turning-milling centres with counter-spindles and bar feeders.</span></p></div>
+        <div class="service-card reveal" data-delay="1"><div class="service-num">02</div><div class="service-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 4v16M15 4v16"/></svg></div><h3><span data-sk>CNC frézovanie</span><span data-en>CNC milling</span></h3><p><span data-sk>Presné frézovanie dielcov podľa výkresovej dokumentácie vrátane tvarových plôch.</span><span data-en>Precise milling of parts from technical drawings, including shaped surfaces.</span></p></div>
+        <div class="service-card reveal" data-delay="2"><div class="service-num">03</div><div class="service-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2v20M5 8l7-6 7 6"/></svg></div><h3><span data-sk>Vŕtanie a závitovanie</span><span data-en>Drilling & threading</span></h3><p><span data-sk>Súradnicové vŕtanie a závitovanie s vysokou opakovateľnosťou pre sériovú výrobu.</span><span data-en>Coordinate drilling and threading with high repeatability for series production.</span></p></div>
+        <div class="service-card reveal"><div class="service-num">04</div><div class="service-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12h18M3 12l4-4M3 12l4 4"/><path d="M21 6v12"/></svg></div><h3><span data-sk>Delenie materiálu</span><span data-en>Material cutting</span></h3><p><span data-sk>Delenie tyčového materiálu do priemeru 300 mm na pásovej píle, presne na mieru.</span><span data-en>Cutting bar stock up to 300 mm diameter on a band saw, precisely to size.</span></p></div>
+        <div class="service-card reveal" data-delay="1"><div class="service-num">05</div><div class="service-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2l9 5v10l-9 5-9-5V7z"/></svg></div><h3><span data-sk>Montáž zostáv</span><span data-en>Assembly</span></h3><p><span data-sk>Z dielcov skladáme hotové zostavy, produktové celky a balenia pre zákazníka.</span><span data-en>We assemble finished units, product sets and packages from parts.</span></p></div>
+        <div class="service-card reveal" data-delay="2"><div class="service-num">06</div><div class="service-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></div><h3><span data-sk>Povrchové úpravy</span><span data-en>Surface finishing</span></h3><p><span data-sk>RAL, zinkovanie, elox, čiernenie, kalenie, chrómovanie, nitridovanie a cementovanie.</span><span data-en>RAL, zinc, anodizing, blackening, hardening, chrome plating, nitriding and carburizing.</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-band">
+    <section>
+      <h2 class="reveal"><span data-sk>Máte výkres? Máme stroj.</span><span data-en>Got a drawing? We've got the machine.</span></h2>
+      <p class="reveal"><span data-sk>Pošlite nám výkresovú dokumentáciu a do pár dní dostanete cenovú ponuku.</span><span data-en>Send us your technical drawing and receive a quote within days.</span></p>
+      <button class="btn-light reveal" onclick="go('kontakt')"><span data-sk>Žiadať kalkuláciu</span><span data-en>Request a quote</span> <span class="arrow">→</span></button>
+    </section>
+  </div>
+</main>
+
+<!-- ===== FIRMA ===== -->
+<main class="page" id="page-firma">
+  <section class="intro" style="padding-top:80px">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="section-tag"><span data-sk>O firme</span><span data-en>Company</span></div>
+          <h2><span data-sk>KOVOTIP, s.r.o. — dlhoročná tradícia</span><span data-en>KOVOTIP, s.r.o. — a long tradition</span></h2>
+        </div>
+        <p><span data-sk>Strojárska firma, ktorá sa zaoberá trieskovým obrábaním ocelí, nerezu, farebných kovov a plastov.</span><span data-en>An engineering company specialising in machining of steel, stainless steel, non-ferrous metals and plastics.</span></p>
+      </div>
+      <div class="intro-grid">
+        <div class="intro-text reveal">
+          <p class="lead"><span data-sk>Zaoberáme sa výrobou dielcov pre všetky druhy odvetví.</span><span data-en>We manufacture parts for all kinds of industries.</span></p>
+          <p><span data-sk>Súčiastky opracúvame na CNC sústruhoch, krátkotočných a dlhotočných krivkových (vačkových) automatoch, ale aj na 6 a 8 vretenových automatických sústruhoch (AN a SAY).</span><span data-en>We machine parts on CNC lathes, short- and long-turning cam automatics, and on 6 and 8-spindle automatic lathes (AN and SAY).</span></p>
+          <p><span data-sk>Na meranie používame meradlá poprednej značky MITUTOYO, závitové a valcové kalibre. Výrobná prevádzka tvorí ucelený samostatný výrobný cyklus.</span><span data-en>We measure with premium MITUTOYO gauges, thread and cylindrical calipers. Our plant forms a complete independent production cycle.</span></p>
+        </div>
+        <div class="intro-visual reveal" data-delay="1">
+          <canvas id="firmaCanvas"></canvas>
+          <div class="intro-badge"><span class="ico">⊹</span> <span data-sk>Ťahaním otáčajte</span><span data-en>Drag to rotate</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="timeline" style="background:var(--mist)">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="section-tag"><span data-sk>Míľniky</span><span data-en>Milestones</span></div>
+          <h2><span data-sk>Cesta firmy KOVOTIP</span><span data-en>The KOVOTIP journey</span></h2>
+        </div>
+      </div>
+      <div class="tl-track">
+        <div class="tl-item reveal"><div class="tl-year">2011</div><h4><span data-sk>Založenie spoločnosti</span><span data-en>Company founded</span></h4><p><span data-sk>Rodinná strojárska firma vznikla so zameraním na trieskové obrábanie kovov.</span><span data-en>A family engineering company founded with a focus on metal machining.</span></p></div>
+        <div class="tl-item reveal" data-delay="1"><div class="tl-year">2017–2020</div><h4><span data-sk>Rozšírenie strojového parku</span><span data-en>Machine park expansion</span></h4><p><span data-sk>Doplnenie 6 a 8 vretenových automatov a viacosových CNC centier pre veľkosériovú výrobu.</span><span data-en>Added 6 and 8-spindle automatics and multi-axis CNC centres for large-series production.</span></p></div>
+        <div class="tl-item reveal" data-delay="2"><div class="tl-year">2023</div><h4><span data-sk>Modernizácia a digitalizácia</span><span data-en>Modernisation & digitalisation</span></h4><p><span data-sk>Nová generácia CNC strojov a investície do meracej techniky MITUTOYO.</span><span data-en>A new generation of CNC machines and investment in MITUTOYO metrology.</span></p></div>
+        <div class="tl-item reveal" data-delay="3"><div class="tl-year">2026</div><h4><span data-sk>11 miliónov vyrobených dielcov</span><span data-en>11 million parts produced</span></h4><p><span data-sk>Materiál nakupujeme z 5 krajín, poskytujeme 12 profesionálnych služieb.</span><span data-en>We source material from 5 countries and provide 12 professional services.</span></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="quality">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="section-tag"><span data-sk>Kvalita</span><span data-en>Quality</span></div>
+          <h2><span data-sk>Meranie a kontrola na každom kuse</span><span data-en>Measurement & control on every piece</span></h2>
+        </div>
+        <p><span data-sk>Presnosť nie je sľub, je to merateľné číslo.</span><span data-en>Precision isn't a promise — it's a measured number.</span></p>
+      </div>
+      <div class="quality-grid">
+        <div class="quality-card reveal"><h4><span class="qn">01</span> <span data-sk>Meradlá MITUTOYO</span><span data-en>MITUTOYO gauges</span></h4><p><span data-sk>Výstupná kontrola závitovými a valcovými kalibrami a digitálnymi prístrojmi Mitutoyo.</span><span data-en>Final control with thread/cylindrical gauges and digital Mitutoyo instruments.</span></p></div>
+        <div class="quality-card reveal" data-delay="1"><h4><span class="qn">02</span> <span data-sk>Opakovateľnosť v sérii</span><span data-en>Series repeatability</span></h4><p><span data-sk>Rovnaký rozmer od 100. po 10 000. kus vďaka súradnicovému obrábaniu.</span><span data-en>The same dimension from the 100th to the 10,000th piece via coordinate machining.</span></p></div>
+        <div class="quality-card reveal" data-delay="2"><h4><span class="qn">03</span> <span data-sk>Ucelený výrobný cyklus</span><span data-en>Complete cycle</span></h4><p><span data-sk>Delenie, obrábanie aj montáž pod jednou strechou — bez medziskladov.</span><span data-en>Cutting, machining and assembly under one roof — no intermediate storage.</span></p></div>
+        <div class="quality-card reveal" data-delay="3"><h4><span class="qn">04</span> <span data-sk>Diskrétnosť a dôvera</span><span data-en>Discretion & trust</span></h4><p><span data-sk>Výkresová dokumentácia zostáva u nás v bezpečí — istota celého kolektívu.</span><span data-en>Your drawings stay safe with us — the assurance of the whole team.</span></p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===== TECHNOLOGIE ===== -->
+<main class="page" id="page-technologie">
+  <section class="machines" style="padding-top:80px">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="section-tag"><span data-sk>Strojový park</span><span data-en>Machine park</span></div>
+          <h2><span data-sk>Technické parametre obrábacích centier</span><span data-en>Technical parameters of our machines</span></h2>
+        </div>
+        <p><span data-sk>Kombinácia klasických sústruhov, vačkových automatov a moderných CNC centier.</span><span data-en>A mix of conventional lathes, cam automatics and modern CNC centres.</span></p>
+      </div>
+      <div class="table-scroll reveal">
+        <table class="machine-table">
+          <thead><tr>
+            <th><span data-sk>Technológia</span><span data-en>Technology</span></th>
+            <th><span data-sk>Typ stroja</span><span data-en>Machine type</span></th>
+            <th><span data-sk>Parametre</span><span data-en>Parameters</span></th>
+            <th><span data-sk>Použitie</span><span data-en>Use</span></th>
+          </tr></thead>
+          <tbody>
+            <tr><td>CNC <span data-sk>sústruženie</span><span data-en>turning</span></td><td class="mono-cell">7–8 <span data-sk>os. centrá</span><span data-en>axis centres</span></td><td class="mono-cell"><span data-sk>protivreteno + podávač</span><span data-en>counter-spindle + feeder</span></td><td><span class="tag-pill"><span data-sk>séria</span><span data-en>series</span></span></td></tr>
+            <tr><td><span data-sk>Vačkové automaty</span><span data-en>Cam automatics</span></td><td class="mono-cell">6–8 <span data-sk>vretenové AN/SAY</span><span data-en>spindle AN/SAY</span></td><td class="mono-cell"><span data-sk>krát./dlhotočné</span><span data-en>short/long turning</span></td><td><span class="tag-pill"><span data-sk>veľká séria</span><span data-en>large series</span></span></td></tr>
+            <tr><td><span data-sk>Klasické sústruhy</span><span data-en>Conventional lathes</span></td><td class="mono-cell"><span data-sk>konvenčné</span><span data-en>manual</span></td><td class="mono-cell"><span data-sk>ručná obsluha</span><span data-en>hand-operated</span></td><td><span class="tag-pill"><span data-sk>kus / opravy</span><span data-en>piece / repairs</span></span></td></tr>
+            <tr><td><span data-sk>Delenie materiálu</span><span data-en>Material cutting</span></td><td class="mono-cell"><span data-sk>pásová píla</span><span data-en>band saw</span></td><td class="mono-cell">⌀ <span data-sk>do</span><span data-en>up to</span> 300 mm</td><td><span class="tag-pill"><span data-sk>príprava</span><span data-en>prep</span></span></td></tr>
+            <tr><td><span data-sk>Vŕtanie / závitovanie</span><span data-en>Drilling / threading</span></td><td class="mono-cell"><span data-sk>súradnicové</span><span data-en>coordinate</span></td><td class="mono-cell"><span data-sk>vys. opakovateľnosť</span><span data-en>high repeatability</span></td><td><span class="tag-pill"><span data-sk>séria</span><span data-en>series</span></span></td></tr>
+            <tr><td><span data-sk>Meranie</span><span data-en>Measurement</span></td><td class="mono-cell">MITUTOYO</td><td class="mono-cell"><span data-sk>závit./valcové kalibre</span><span data-en>thread/cyl. gauges</span></td><td><span class="tag-pill"><span data-sk>kontrola</span><span data-en>control</span></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="materials">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="section-tag"><span data-sk>Materiály a kooperácia</span><span data-en>Materials & cooperation</span></div>
+          <h2><span data-sk>Spracovávané materiály a úpravy</span><span data-en>Processed materials & finishes</span></h2>
+        </div>
+      </div>
+      <div class="mat-grid">
+        <div class="mat-col reveal">
+          <h3><span data-sk>Materiály</span><span data-en>Materials</span></h3>
+          <div class="mat-list">
+            <span class="mat-item"><span data-sk>Konštrukčná oceľ</span><span data-en>Structural steel</span></span>
+            <span class="mat-item"><span data-sk>Nerezová oceľ</span><span data-en>Stainless steel</span></span>
+            <span class="mat-item"><span data-sk>Hliník</span><span data-en>Aluminium</span></span>
+            <span class="mat-item"><span data-sk>Mosadz</span><span data-en>Brass</span></span>
+            <span class="mat-item"><span data-sk>Bronz</span><span data-en>Bronze</span></span>
+            <span class="mat-item"><span data-sk>Meď</span><span data-en>Copper</span></span>
+            <span class="mat-item"><span data-sk>Technické plasty</span><span data-en>Technical plastics</span></span>
+          </div>
+        </div>
+        <div class="mat-col reveal" data-delay="1">
+          <h3><span data-sk>Kooperácia a úpravy</span><span data-en>Cooperation & finishing</span></h3>
+          <div class="mat-list">
+            <span class="mat-item"><span data-sk>CNC ohýbanie</span><span data-en>CNC bending</span></span>
+            <span class="mat-item"><span data-sk>Výroba ozubenia</span><span data-en>Gear cutting</span></span>
+            <span class="mat-item"><span data-sk>Rezanie laserom</span><span data-en>Laser cutting</span></span>
+            <span class="mat-item"><span data-sk>Vodný lúč</span><span data-en>Water jet</span></span>
+            <span class="mat-item"><span data-sk>Práškové farby RAL</span><span data-en>RAL powder coat</span></span>
+            <span class="mat-item"><span data-sk>Zinkovanie / elox</span><span data-en>Zinc / anodizing</span></span>
+            <span class="mat-item"><span data-sk>Indukčné kalenie</span><span data-en>Induction hardening</span></span>
+            <span class="mat-item"><span data-sk>Chrómovanie</span><span data-en>Chrome plating</span></span>
+            <span class="mat-item"><span data-sk>Nitridovanie / cementovanie</span><span data-en>Nitriding / carburizing</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="services" style="background:var(--mist)">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="section-tag"><span data-sk>Postup zákazky</span><span data-en>Order process</span></div>
+          <h2><span data-sk>Od výkresu po hotový diel</span><span data-en>From drawing to finished part</span></h2>
+        </div>
+      </div>
+      <div class="service-grid">
+        <div class="service-card reveal"><div class="service-num">01</div><div class="service-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h12l4 4v12H4z"/><path d="M16 4v4h4"/></svg></div><h3><span data-sk>Pošlete výkres</span><span data-en>Send a drawing</span></h3><p><span data-sk>Zašlite dokumentáciu a špecifikáciu materiálu e-mailom alebo formulárom.</span><span data-en>Send documentation and material specs by email or via the form.</span></p></div>
+        <div class="service-card reveal" data-delay="1"><div class="service-num">02</div><div class="service-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h12"/></svg></div><h3><span data-sk>Cenová ponuka</span><span data-en>Price quote</span></h3><p><span data-sk>Pripravíme ponuku podľa technológie, materiálu a požadovaného termínu.</span><span data-en>We prepare a quote based on technology, material and deadline.</span></p></div>
+        <div class="service-card reveal" data-delay="2"><div class="service-num">03</div><div class="service-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><h3><span data-sk>Výroba a kontrola</span><span data-en>Production & control</span></h3><p><span data-sk>Realizácia na vhodnom stroji, výstupná kontrola rozmerov a expedícia.</span><span data-en>Made on the right machine, final dimensional check and dispatch.</span></p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===== VYROBKY 3D ===== -->
+<main class="page" id="page-vyrobky">
+  <section class="products" style="padding-top:80px">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="section-tag"><span data-sk>Výrobný program · 3D</span><span data-en>Product range · 3D</span></div>
+          <h2><span data-sk>Prehliadnite si naše dielce v 3D</span><span data-en>Explore our parts in 3D</span></h2>
+        </div>
+        <p><span data-sk>Ťahaním myšou otáčajte model. Kliknite pre technické detaily.</span><span data-en>Drag to rotate. Click for technical details.</span></p>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+    </div>
+  </section>
+
+  <div class="cta-band">
+    <section>
+      <h2 class="reveal"><span data-sk>Nenašli ste svoj diel?</span><span data-en>Didn't find your part?</span></h2>
+      <p class="reveal"><span data-sk>Vyrábame čapy, puzdrá, skrutky, príruby, spojky, redukcie a stovky ďalších dielcov podľa výkresu.</span><span data-en>We make pins, bushings, screws, flanges, couplings, reducers and hundreds more parts to drawing.</span></p>
+      <button class="btn-light reveal" onclick="go('kontakt')"><span data-sk>Poslať výkres</span><span data-en>Send a drawing</span> <span class="arrow">→</span></button>
+    </section>
+  </div>
+</main>
+
+<!-- ===== KONTAKT ===== -->
+<main class="page" id="page-kontakt">
+  <section class="contact" style="padding-top:80px">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="section-tag"><span data-sk>Kontakt</span><span data-en>Contact</span></div>
+          <h2><span data-sk>Pošlite výkres, ozveme sa s ponukou</span><span data-en>Send a drawing, we'll reply with a quote</span></h2>
+        </div>
+      </div>
+      <div class="contact-grid">
+        <div class="reveal">
+          <div class="contact-info-row"><div class="contact-info-label"><span data-sk>Prevádzka</span><span data-en>Plant</span></div><div class="contact-info-value">Šebastovská 7741/4<br>080 06 Nižná Šebastová – Prešov</div></div>
+          <div class="contact-info-row"><div class="contact-info-label"><span data-sk>Sídlo</span><span data-en>HQ</span></div><div class="contact-info-value">Námestie mieru 3<br>081 92 Prešov</div></div>
+          <div class="contact-info-row"><div class="contact-info-label"><span data-sk>Telefón</span><span data-en>Phone</span></div><div class="contact-info-value"><a href="tel:+421907244588">+421 907 244 588</a><br><a href="tel:+421918717527">+421 918 717 527</a></div></div>
+          <div class="contact-info-row"><div class="contact-info-label">E-mail</div><div class="contact-info-value"><a href="mailto:kovotip@cncpresov.sk">kovotip@cncpresov.sk</a></div></div>
+          <div class="contact-info-row"><div class="contact-info-label">IČO / IČ DPH</div><div class="contact-info-value mono">46054723 / SK2023210255</div></div>
+          <div class="social-row">
+            <a class="social-btn" href="https://www.facebook.com/cncpresov" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.99 3.66 9.13 8.44 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99C18.34 21.13 22 16.99 22 12z"/></svg></a>
+            <a class="social-btn" href="https://www.instagram.com/cncpresov" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 3.68A6.16 6.16 0 1012 18.16 6.16 6.16 0 0012 5.84zm0 10.16a4 4 0 110-8 4 4 0 010 8zm6.4-10.4a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/></svg></a>
+          </div>
+        </div>
+        <div class="rfq-box reveal" data-delay="1">
+          <h3><span data-sk>Nezáväzná kalkulácia</span><span data-en>Free quote</span></h3>
+          <div class="sub"><span data-sk>Vyplňte formulár, výkres priložte e-mailom na kovotip@cncpresov.sk.</span><span data-en>Fill in the form, attach your drawing via email to kovotip@cncpresov.sk.</span></div>
+          <form onsubmit="submitForm(event)">
+            <div class="form-row"><label><span data-sk>Meno / Firma</span><span data-en>Name / Company</span></label><input type="text" required></div>
+            <div class="form-row"><label>E-mail</label><input type="email" required></div>
+            <div class="form-row"><label><span data-sk>Popis zákazky</span><span data-en>Order description</span></label><textarea placeholder="Materiál, množstvo, termín..."></textarea></div>
+            <button type="submit" class="form-submit"><span data-sk>Odoslať dopyt</span><span data-en>Send inquiry</span></button>
+          </form>
+          <div class="map-wrap"><iframe loading="lazy" title="Mapa KOVOTIP" src="https://www.openstreetmap.org/export/embed.html?bbox=21.27%2C49.00%2C21.33%2C49.03&layer=mapnik&marker=49.0157%2C21.2986"></iframe></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-col">
+      <div class="logo"><span class="logo-mark"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="#5BC8FF" stroke-width="2.5"/><circle cx="20" cy="20" r="7" fill="#5BC8FF"/></svg></span>KOVOTIP, s.r.o.</div>
+      <p><span data-sk>Presné CNC sústruženie a frézovanie v Prešove. Rodinná firma od roku 2011, 11 miliónov vyrobených dielcov.</span><span data-en>Precision CNC turning and milling in Prešov. A family company since 2011, 11 million parts produced.</span></p>
+    </div>
+    <div class="footer-col">
+      <h5><span data-sk>Stránky</span><span data-en>Pages</span></h5>
+      <a onclick="go('home')"><span data-sk>Domov</span><span data-en>Home</span></a>
+      <a onclick="go('firma')"><span data-sk>O firme</span><span data-en>Company</span></a>
+      <a onclick="go('technologie')"><span data-sk>Technológie</span><span data-en>Technologies</span></a>
+      <a onclick="go('vyrobky')"><span data-sk>Výrobky 3D</span><span data-en>Products 3D</span></a>
+      <a onclick="go('kontakt')">Kontakt</a>
+    </div>
+    <div class="footer-col">
+      <h5>Kontakt</h5>
+      <a href="tel:+421907244588">+421 907 244 588</a>
+      <a href="mailto:kovotip@cncpresov.sk">kovotip@cncpresov.sk</a>
+      <p style="margin-top:8px">Šebastovská 7741/4<br>Nižná Šebastová – Prešov</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2011–2026 KOVOTIP, s.r.o.</div>
+    <div class="mono"><span data-sk>CNC obrábanie · Prešov · Slovensko</span><span data-en>CNC machining · Prešov · Slovakia</span></div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-canvas">
+      <canvas id="modalCanvas"></canvas>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+      <div class="drag-hint">⊹ <span data-sk>Ťahaním otáčajte</span><span data-en>Drag to rotate</span></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-num" id="mNum"></div>
+      <h3 id="mTitle"></h3>
+      <p id="mDesc"></p>
+      <div class="modal-specs" id="mSpecs"></div>
+      <button class="btn-primary modal-cta" onclick="closeModal();go('kontakt')"><span data-sk>Vyžiadať tento diel</span><span data-en>Request this part</span> <span class="arrow">→</span></button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ============================================================
+   KOVOTIP — 3D engine (Three.js r128, custom drag controls)
+============================================================ */
+const STEEL = 0xDCE6F2, STEEL_DARK = 0x9DB0C8, BRASS = 0xE8B84B, ACCENT = 0x3E9BFF;
+
+function makeRenderer(canvas){
+  const r = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  r.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  r.outputEncoding = THREE.sRGBEncoding;
+  return r;
+}
+function lights(scene){
+  scene.add(new THREE.AmbientLight(0xffffff,0.6));
+  const k=new THREE.DirectionalLight(0xffffff,1.15); k.position.set(5,9,7); scene.add(k);
+  const f=new THREE.DirectionalLight(0x6CCBFF,0.7); f.position.set(-7,-2,-3); scene.add(f);
+  const rim=new THREE.DirectionalLight(0x3E9BFF,0.85); rim.position.set(-2,4,-9); scene.add(rim);
+  const top=new THREE.PointLight(0xffffff,0.6,200); top.position.set(0,14,8); scene.add(top);
+}
+function metal(color){
+  return new THREE.MeshStandardMaterial({color, metalness:0.78, roughness:0.26});
+}
+
+/* ---- Part geometries (return a THREE.Group) ---- */
+function partShaft(){
+  const g=new THREE.Group();
+  // stepped profile via LatheGeometry
+  const pts=[
+    [0,0],[10,0],[10,3.5],[26,3.5],[26,5],[60,5],[60,3],[72,3],[72,4.5],[88,4.5],[88,0],[0,0]
+  ].map(p=>new THREE.Vector2(p[1],p[0]-44));
+  const lathe=new THREE.LatheGeometry(pts,48);
+  const m=new THREE.Mesh(lathe, metal(STEEL)); g.add(m);
+  // accent groove ring
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(5.2,0.7,16,40), metal(ACCENT));
+  ring.position.y=6; ring.rotation.x=Math.PI/2; g.add(ring);
+  g.rotation.z=Math.PI/2.1;
+  return g;
+}
+function partBushing(){
+  const g=new THREE.Group();
+  const outer=new THREE.Mesh(new THREE.CylinderGeometry(14,14,22,56,1,true), metal(BRASS));
+  g.add(outer);
+  const inner=new THREE.Mesh(new THREE.CylinderGeometry(8,8,22.4,56,1,true), metal(STEEL_DARK));
+  inner.material.side=THREE.BackSide; g.add(inner);
+  // rims
+  [11,-11].forEach(y=>{
+    const r=new THREE.Mesh(new THREE.RingGeometry(8,14,56), metal(BRASS));
+    r.rotation.x=Math.PI/2; r.position.y=y; r.material.side=THREE.DoubleSide; g.add(r);
+  });
+  const acc=new THREE.Mesh(new THREE.TorusGeometry(14,0.6,14,56), metal(ACCENT));
+  acc.rotation.x=Math.PI/2; g.add(acc);
+  return g;
+}
+function partFlange(){
+  const g=new THREE.Group();
+  const disc=new THREE.Mesh(new THREE.CylinderGeometry(20,20,5,64), metal(STEEL));
+  g.add(disc);
+  const hub=new THREE.Mesh(new THREE.CylinderGeometry(8,8,12,48), metal(STEEL));
+  hub.position.y=6; g.add(hub);
+  // center bore
+  const bore=new THREE.Mesh(new THREE.CylinderGeometry(4,4,20,32), metal(STEEL_DARK));
+  bore.material.side=THREE.BackSide; g.add(bore);
+  // bolt holes (accent)
+  for(let i=0;i<6;i++){
+    const a=i/6*Math.PI*2;
+    const h=new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,24), metal(ACCENT));
+    h.position.set(Math.cos(a)*14,0,Math.sin(a)*14); g.add(h);
+  }
+  return g;
+}
+function partScrew(){
+  const g=new THREE.Group();
+  // hex head
+  const head=new THREE.Mesh(new THREE.CylinderGeometry(7,7,6,6), metal(STEEL));
+  head.position.y=20; g.add(head);
+  // shank
+  const shank=new THREE.Mesh(new THREE.CylinderGeometry(4,4,30,40), metal(STEEL));
+  shank.position.y=2; g.add(shank);
+  // thread (helix of small torus segments)
+  const threadMat=metal(ACCENT);
+  for(let i=0;i<26;i++){
+    const t=new THREE.Mesh(new THREE.TorusGeometry(4.1,0.7,8,24), threadMat);
+    t.position.y=-13+i*1.05; t.rotation.x=Math.PI/2; t.rotation.z=i*0.5; t.scale.set(1,1,0.5); g.add(t);
+  }
+  return g;
+}
+function partCoupling(){
+  const g=new THREE.Group();
+  const a=new THREE.Mesh(new THREE.CylinderGeometry(12,12,16,48), metal(STEEL));
+  a.position.y=8; g.add(a);
+  const b=new THREE.Mesh(new THREE.CylinderGeometry(12,9,16,48), metal(STEEL_DARK));
+  b.position.y=-8; g.add(b);
+  const band=new THREE.Mesh(new THREE.TorusGeometry(12,1.1,16,56), metal(ACCENT));
+  band.rotation.x=Math.PI/2; g.add(band);
+  const bore=new THREE.Mesh(new THREE.CylinderGeometry(4.5,4.5,33,32), metal(STEEL_DARK));
+  bore.material.side=THREE.BackSide; g.add(bore);
+  return g;
+}
+function partNipple(){
+  const g=new THREE.Group();
+  const body=new THREE.Mesh(new THREE.CylinderGeometry(7,7,14,6), metal(BRASS));
+  g.add(body);
+  [13,-13].forEach((y,idx)=>{
+    const end=new THREE.Mesh(new THREE.CylinderGeometry(5,5,14,40), metal(BRASS));
+    end.position.y=y; g.add(end);
+    for(let i=0;i<6;i++){
+      const t=new THREE.Mesh(new THREE.TorusGeometry(5.1,0.5,8,24), metal(ACCENT));
+      t.position.y=y-6+i*2; t.rotation.x=Math.PI/2; g.add(t);
+    }
+  });
+  return g;
+}
+const PART_BUILDERS={shaft:partShaft,bushing:partBushing,flange:partFlange,screw:partScrew,coupling:partCoupling,nipple:partNipple};
+
+/* ---- Interactive viewer with drag-to-rotate ---- */
+function createViewer(canvas, builder, opts={}){
+  const scene=new THREE.Scene();
+  lights(scene);
+  const part=builder(); scene.add(part);
+  const cam=new THREE.PerspectiveCamera(38,1,0.1,1000);
+  cam.position.set(0,0,opts.dist||120);
+  const renderer=makeRenderer(canvas);
+  let rotX=opts.rx||0.3, rotY=opts.ry||0.5, autoVel=opts.auto??0.004, dragging=false, lastX=0,lastY=0, velX=0,velY=0;
+
+  function resize(){
+    const w=canvas.clientWidth||300, h=canvas.clientHeight||220;
+    renderer.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix();
+  }
+  function onDown(e){dragging=true;const p=e.touches?e.touches[0]:e;lastX=p.clientX;lastY=p.clientY;velX=velY=0;}
+  function onMove(e){
+    if(!dragging)return;
+    const p=e.touches?e.touches[0]:e;
+    velY=(p.clientX-lastX)*0.01; velX=(p.clientY-lastY)*0.01;
+    rotY+=velY; rotX+=velX;
+    rotX=Math.max(-1.3,Math.min(1.3,rotX));
+    lastX=p.clientX;lastY=p.clientY;
+    if(e.touches)e.preventDefault();
+  }
+  function onUp(){dragging=false;}
+  canvas.addEventListener('mousedown',onDown); canvas.addEventListener('touchstart',onDown,{passive:true});
+  window.addEventListener('mousemove',onMove); canvas.addEventListener('touchmove',onMove,{passive:false});
+  window.addEventListener('mouseup',onUp); window.addEventListener('touchend',onUp);
+
+  let raf;
+  function loop(){
+    if(!dragging){
+      rotY+=autoVel+velY; velY*=0.94; velX*=0.94; rotX+=velX;
+      rotX=Math.max(-1.3,Math.min(1.3,rotX));
+    }
+    part.rotation.x=rotX; part.rotation.y=rotY;
+    renderer.render(scene,cam);
+    raf=requestAnimationFrame(loop);
+  }
+  resize(); loop();
+  return {resize, dispose(){cancelAnimationFrame(raf); renderer.dispose();}, setAuto(v){autoVel=v;}};
+}
+
+/* ---- Hero background: floating wireframe parts ---- */
+function initHero(){
+  const canvas=document.getElementById('heroCanvas'); if(!canvas)return;
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(50,1,0.1,1000); cam.position.z=140;
+  const renderer=makeRenderer(canvas);
+  lights(scene);
+  const group=new THREE.Group(); scene.add(group);
+  const builders=[partShaft,partBushing,partFlange,partGear];
+  function partGear(){
+    const g=new THREE.Group();
+    const body=new THREE.Mesh(new THREE.CylinderGeometry(14,14,6,40), metal(STEEL));
+    g.add(body);
+    for(let i=0;i<14;i++){const a=i/14*Math.PI*2;const t=new THREE.Mesh(new THREE.BoxGeometry(3,6,4),metal(STEEL));t.position.set(Math.cos(a)*15,0,Math.sin(a)*15);t.rotation.y=-a;g.add(t);}
+    const c=new THREE.Mesh(new THREE.TorusGeometry(6,1,12,32),metal(ACCENT));c.rotation.x=Math.PI/2;g.add(c);
+    return g;
+  }
+  const items=[];
+  const defs=[
+    {b:partFlange,x:-46,y:18,z:0,s:1.1},{b:partShaft,x:42,y:-10,z:-20,s:0.9},
+    {b:partGear,x:8,y:30,z:-30,s:1.0},{b:partBushing,x:-30,y:-28,z:-10,s:0.85},
+    {b:partGear,x:56,y:26,z:-40,s:0.7},
+  ];
+  defs.forEach(d=>{const p=d.b();p.scale.setScalar(d.s);p.position.set(d.x,d.y,d.z);
+    p.userData={sx:0.002+Math.random()*0.004,sy:0.003+Math.random()*0.004,fy:d.y,ph:Math.random()*6};
+    group.add(p);items.push(p);});
+
+  // floating particles (metal dust / sparks)
+  const pCount=260, pGeo=new THREE.BufferGeometry(), pPos=new Float32Array(pCount*3);
+  for(let i=0;i<pCount;i++){pPos[i*3]=(Math.random()-0.5)*220;pPos[i*3+1]=(Math.random()-0.5)*160;pPos[i*3+2]=(Math.random()-0.5)*120;}
+  pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+  const pMat=new THREE.PointsMaterial({color:0x6CCBFF,size:0.9,transparent:true,opacity:0.55,sizeAttenuation:true});
+  const particles=new THREE.Points(pGeo,pMat); scene.add(particles);
+
+  let mx=0,my=0;
+  window.addEventListener('mousemove',e=>{mx=(e.clientX/window.innerWidth-0.5);my=(e.clientY/window.innerHeight-0.5);});
+  function resize(){const w=canvas.clientWidth,h=canvas.clientHeight;renderer.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();}
+  let t=0;
+  function loop(){
+    t+=0.016;
+    items.forEach(p=>{p.rotation.x+=p.userData.sx;p.rotation.y+=p.userData.sy;p.position.y=p.userData.fy+Math.sin(t+p.userData.ph)*4;});
+    particles.rotation.y+=0.0006; particles.position.y=Math.sin(t*0.3)*3;
+    const arr=pGeo.attributes.position.array;
+    for(let i=0;i<pCount;i++){arr[i*3+1]+=0.04;if(arr[i*3+1]>80)arr[i*3+1]=-80;}
+    pGeo.attributes.position.needsUpdate=true;
+    group.rotation.y += ((mx*0.5)-group.rotation.y)*0.04;
+    group.rotation.x += ((my*0.3)-group.rotation.x)*0.04;
+    renderer.render(scene,cam);
+    requestAnimationFrame(loop);
+  }
+  resize(); loop();
+  window.addEventListener('resize',resize);
+}
+
+/* ---- Optional hero video (drop a file at assets/cnc-hero.mp4 to enable) ---- */
+function initHeroVideo(){
+  const v=document.getElementById('heroVideo'); if(!v)return;
+  // To enable a video background: place an mp4 and uncomment / set the source below.
+  // v.src='assets/cnc-hero.mp4';
+  const src=v.getAttribute('data-src');
+  if(src){v.src=src;}
+  v.addEventListener('loadeddata',()=>{v.classList.add('loaded');});
+}
+
+/* ---- Products data ---- */
+const PRODUCTS=[
+  {id:'01',key:'shaft',sk:{t:'Čapy a osi',d:'Sústružené čapy a osi rôznych priemerov a dĺžok. Vysoká rozmerová presnosť a kvalita povrchu pre rotačné aplikácie a uloženia.'},en:{t:'Pins & axles',d:'Turned pins and axles of various diameters and lengths. High dimensional accuracy and surface quality for rotary applications and housings.'},specs:[['⌀','3–300 mm'],['Tolerancia|Tolerance','±0,01 mm'],['Materiál|Material','C45 / 42CrMo4'],['Povrch|Surface','Ra 0.8–1.6']]},
+  {id:'02',key:'bushing',sk:{t:'Puzdrá',d:'Presné puzdrá a vložky s vnútorným aj vonkajším obrábaním. Vhodné pre uloženia, ložiská a vodiace prvky.'},en:{t:'Bushings',d:'Precise bushings and sleeves with inner and outer machining. Ideal for housings, bearings and guide elements.'},specs:[['⌀','5–200 mm'],['Tolerancia|Tolerance','±0,01 mm'],['Materiál|Material','Bronz / mosadz|Bronze / brass'],['Séria|Series','kus – 10 000+|piece – 10,000+']]},
+  {id:'03',key:'flange',sk:{t:'Príruby',d:'Príruby s presným roztečným kruhom otvorov, súradnicovo vŕtané a závitované pre spoľahlivé prírubové spoje.'},en:{t:'Flanges',d:'Flanges with a precise bolt-hole circle, coordinate-drilled and threaded for reliable flanged joints.'},specs:[['⌀','do 300 mm|up to 300 mm'],['Otvory|Holes','súradnicové|coordinate'],['Materiál|Material','S235 / S355'],['Úprava|Finish','zinok / RAL|zinc / RAL']]},
+  {id:'04',key:'screw',sk:{t:'Skrutky a matice',d:'Zákazkové skrutky, matice a závitové prvky neštandardných rozmerov, ktoré nenájdete v katalógu.'},en:{t:'Screws & nuts',d:'Custom screws, nuts and threaded elements in non-standard sizes you won\'t find in a catalogue.'},specs:[['Závit|Thread','M3 – M48'],['Tolerancia|Tolerance','6g / 6H'],['Materiál|Material','oceľ / nerez|steel / stainless'],['Séria|Series','malá – veľká|small – large']]},
+  {id:'05',key:'coupling',sk:{t:'Spojky a redukcie',d:'Spojovacie a redukčné prvky pre prenos pohybu a spájanie hriadeľov rôznych priemerov.'},en:{t:'Couplings & reducers',d:'Coupling and reducing elements for motion transfer and joining shafts of different diameters.'},specs:[['⌀','8–150 mm'],['Tolerancia|Tolerance','±0,01 mm'],['Materiál|Material','oceľ / hliník|steel / aluminium'],['Použitie|Use','strojárstvo|engineering']]},
+  {id:'06',key:'nipple',sk:{t:'Hadicové koncovky',d:'Vsuvky, prechodky a nátrubky pre hydraulické a pneumatické systémy s presnými závitmi a tesniacimi plochami.'},en:{t:'Hose fittings',d:'Nipples, adapters and connectors for hydraulic and pneumatic systems with precise threads and sealing faces.'},specs:[['Závit|Thread','G1/8 – G2'],['Tlak|Pressure','vysokotlakové|high-pressure'],['Materiál|Material','mosadz / oceľ|brass / steel'],['Tesnenie|Sealing','presné|precise']]},
+];
+
+const cardViewers=[];
+function buildProducts(){
+  const grid=document.getElementById('productGrid'); if(grid.children.length)return;
+  grid.innerHTML=PRODUCTS.map((p,i)=>`
+    <div class="product-card reveal" data-delay="${i%3}" onclick="openModal(${i})">
+      <div class="product-canvas-wrap"><canvas id="pcanvas${i}"></canvas><div class="drag-hint">⊹ <span data-sk>ťahaj</span><span data-en>drag</span></div></div>
+      <div class="product-body">
+        <h3><span data-sk>${p.sk.t}</span><span data-en>${p.en.t}</span></h3>
+        <p><span data-sk>${p.sk.d.slice(0,58)}…</span><span data-en>${p.en.d.slice(0,58)}…</span></p>
+        <div class="product-more"><span data-sk>Detaily a 3D</span><span data-en>Details & 3D</span> <span class="arrow">→</span></div>
+      </div>
+    </div>`).join('');
+  PRODUCTS.forEach((p,i)=>{
+    const c=document.getElementById('pcanvas'+i);
+    cardViewers.push(createViewer(c, PART_BUILDERS[p.key], {dist:110,auto:0.006}));
+  });
+  observeReveals();
+}
+
+/* ---- Modal 3D ---- */
+let modalViewer=null;
+function lab(raw){
+  if(raw.includes('|')){const[a,b]=raw.split('|');return `<span data-sk>${a}</span><span data-en>${b}</span>`;}
+  return raw;
+}
+function openModal(i){
+  const p=PRODUCTS[i];
+  document.getElementById('mNum').textContent='REF. KT-'+p.id;
+  document.getElementById('mTitle').innerHTML=`<span data-sk>${p.sk.t}</span><span data-en>${p.en.t}</span>`;
+  document.getElementById('mDesc').innerHTML=`<span data-sk>${p.sk.d}</span><span data-en>${p.en.d}</span>`;
+  document.getElementById('mSpecs').innerHTML=p.specs.map(s=>`<div class="modal-spec-row"><span class="l">${lab(s[0])}</span><span class="v">${lab(s[1])}</span></div>`).join('');
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+  if(modalViewer)modalViewer.dispose();
+  setTimeout(()=>{
+    const c=document.getElementById('modalCanvas');
+    modalViewer=createViewer(c, PART_BUILDERS[p.key], {dist:115,auto:0.005});
+    modalViewer.resize();
+  },60);
+}
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+  if(modalViewer){modalViewer.dispose();modalViewer=null;}
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+/* ---- Section viewers (intro, firma) ---- */
+let introViewer=null, firmaViewer=null;
+function ensureIntro(){
+  const c=document.getElementById('introCanvas');
+  if(c && !introViewer){introViewer=createViewer(c,partFlange,{dist:95,auto:0.006});}
+  if(introViewer)introViewer.resize();
+}
+function ensureFirma(){
+  const c=document.getElementById('firmaCanvas');
+  if(c && !firmaViewer){firmaViewer=createViewer(c,partShaft,{dist:120,auto:0.006});}
+  if(firmaViewer)firmaViewer.resize();
+}
+
+/* ---- Routing ---- */
+function go(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el=document.getElementById('page-'+page); if(el)el.classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.toggle('active',a.dataset.page===page));
+  document.getElementById('navLinks').classList.remove('open');
+  window.scrollTo({top:0,behavior:'instant'});
+  observeReveals();
+  if(page==='vyrobky')buildProducts();
+  if(page==='home')setTimeout(ensureIntro,80);
+  if(page==='firma')setTimeout(ensureFirma,80);
+}
+
+/* ---- Language ---- */
+function setLang(l){
+  document.body.classList.toggle('lang-en',l==='en');
+  document.body.classList.toggle('lang-sk',l==='sk');
+  document.documentElement.lang=l;
+  document.getElementById('btnSK').classList.toggle('active',l==='sk');
+  document.getElementById('btnEN').classList.toggle('active',l==='en');
+}
+
+/* ---- Form ---- */
+function submitForm(e){
+  e.preventDefault();
+  const btn=e.target.querySelector('.form-submit');
+  btn.innerHTML=document.body.classList.contains('lang-en')?'Sent ✓':'Odoslané ✓';
+  btn.style.background='#103A6B';
+}
+
+/* ---- Counters ---- */
+function animateCounters(){
+  document.querySelectorAll('[data-count]').forEach(el=>{
+    if(el.dataset.done)return;
+    if(el.dataset.raw){el.dataset.done=1;return;}
+    const target=+el.dataset.count, suf=el.dataset.suffix||'';
+    if(target===0){el.dataset.done=1;return;}
+    el.dataset.done=1;
+    const isYear = el.dataset.suffix===undefined && target>1900;
+    let cur=0; const step=target/50;
+    const fmt=(n)=> isYear ? String(n) : n.toLocaleString('sk-SK')+suf;
+    const tick=()=>{cur+=step;if(cur>=target){el.textContent=fmt(target);}else{el.textContent=fmt(Math.floor(cur));requestAnimationFrame(tick);}};
+    tick();
+  });
+}
+
+/* ---- Reveal observer ---- */
+let revealObserver;
+function observeReveals(){
+  if(!revealObserver){
+    revealObserver=new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');revealObserver.unobserve(en.target);if(en.target.querySelector('[data-count]')||en.target.matches('.stat-cell'))animateCounters();}});
+    },{threshold:0.08});
+  }
+  document.querySelectorAll('.page.active .reveal:not(.in)').forEach(el=>revealObserver.observe(el));
+}
+
+/* ---- Resize ---- */
+window.addEventListener('resize',()=>{
+  cardViewers.forEach(v=>v.resize());
+  if(introViewer)introViewer.resize();
+  if(firmaViewer)firmaViewer.resize();
+  if(modalViewer)modalViewer.resize();
+});
+
+/* ---- Init ---- */
+window.addEventListener('load',()=>{
+  initHero();
+  initHeroVideo();
+  observeReveals();
+  animateCounters();
+  setTimeout(ensureIntro,200);
+});
+</script>
+</body>
+</html>
